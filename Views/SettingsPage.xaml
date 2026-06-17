@@ -1,0 +1,582 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SnapStakMobile.Views.SettingsPage"
+             BackgroundColor="#060709"
+             Title="Settings">
+
+    <Grid>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="12">
+
+            <!-- Header -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Settings"
+                       FontSize="21" FontAttributes="Bold"
+                       TextColor="#FFFFFF" />
+                <Label Text="Manage your API key, subscription, and design tool plugins."
+                       FontSize="13" TextColor="#888888" />
+            </VerticalStackLayout>
+
+            <!-- ── OpenRouter API Key ──────────────────────────────────────── -->
+            <Border BackgroundColor="#141414"
+                    Stroke="#1E1E1E" StrokeThickness="0.5"
+                    Padding="16">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="11" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="9">
+                    <Label Text="OPENROUTER CREDITS"
+                           FontSize="10" FontAttributes="Bold"
+                           TextColor="#888888" CharacterSpacing="0.7" />
+                    <Border BackgroundColor="#0A1220"
+                            Stroke="#1A2A3A" StrokeThickness="0.5"
+                            Padding="9,9">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="7" />
+                        </Border.StrokeShape>
+                        <Label Text="Your OpenRouter API key is paired from SnapStak Desktop. AI requests go directly from your device to OpenRouter at cost — no markup."
+                               FontSize="12" TextColor="#6688BB" LineBreakMode="WordWrap" />
+                    </Border>
+                    <!-- Credits balance — fetched using the paired key -->
+                    <Border x:Name="CreditsPanel"
+                            IsVisible="False"
+                            BackgroundColor="#0A140A"
+                            Stroke="#1A3A1A" StrokeThickness="0.5"
+                            Padding="8,8">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="7" />
+                        </Border.StrokeShape>
+                        <Label x:Name="CreditsLabel"
+                               FontSize="12" TextColor="#44FF88" />
+                    </Border>
+                    <Border BackgroundColor="#0A0A14"
+                            Stroke="#2A2A3D" StrokeThickness="0.5"
+                            Padding="9,9">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="7" />
+                        </Border.StrokeShape>
+                        <Label Text="To top up your OpenRouter credits, open SnapStak Desktop on your PC."
+                               FontSize="12" TextColor="#7878A0" LineBreakMode="WordWrap" />
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- ── Subscription ───────────────────────────────────────────── -->
+            <Border BackgroundColor="#141414"
+                    Stroke="#1E1E1E" StrokeThickness="0.5"
+                    Padding="16">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="11" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="9">
+                    <Label Text="SUBSCRIPTION"
+                           FontSize="10" FontAttributes="Bold"
+                           TextColor="#888888" CharacterSpacing="0.7" />
+                    <!-- Enterprise: server URL config (hidden in Standalone build) -->
+                    <VerticalStackLayout x:Name="ServerUrlPanel" Spacing="6"
+                                        IsVisible="false">
+                        <Label Text="Enterprise Server URL"
+                               FontSize="11" TextColor="#888888" />
+                        <Entry x:Name="ServerUrlEntry"
+                               Placeholder="https://enterprise.snapstak.ai"
+                               BackgroundColor="#0A0A0A"
+                               TextColor="#E8E8E8"
+                               PlaceholderColor="#444444"
+                               FontSize="13"
+                               FontFamily="Monospace" />
+                        <HorizontalStackLayout Spacing="8">
+                            <Button Text="Save URL"
+                                    BackgroundColor="#38A3F8" TextColor="#000000"
+                                    FontSize="13" FontAttributes="Bold"
+                                    CornerRadius="7" Padding="16,8"
+                                    Clicked="OnSaveServerUrlClicked" />
+                        </HorizontalStackLayout>
+                        <Border x:Name="ServerUrlSavedBanner"
+                                IsVisible="False"
+                                BackgroundColor="#0A140A"
+                                Stroke="#1A3A1A" StrokeThickness="0.5"
+                                Padding="7,7">
+                            <Border.StrokeShape><RoundRectangle CornerRadius="7" /></Border.StrokeShape>
+                            <Label Text="✓ Server URL saved." FontSize="12" TextColor="#44FF88" />
+                        </Border>
+                    </VerticalStackLayout>
+
+                    <!-- Subscription status -->
+                    <Border x:Name="SubActiveBorder"
+                            IsVisible="False"
+                            BackgroundColor="#0A140A"
+                            Stroke="#1A3A1A" StrokeThickness="0.5"
+                            Padding="10,10">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="8" /></Border.StrokeShape>
+                        <HorizontalStackLayout Spacing="8">
+                            <Ellipse Fill="#44FF88" WidthRequest="8" HeightRequest="8"
+                                     VerticalOptions="Center" />
+                            <Label x:Name="SubActiveLabel"
+                                   Text="SnapStak Mobile — Active"
+                                   FontSize="13" FontAttributes="Bold"
+                                   TextColor="#44FF88" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </Border>
+                    <Border x:Name="SubInactiveBorder"
+                            IsVisible="True"
+                            BackgroundColor="#1A0A0A"
+                            Stroke="#440000" StrokeThickness="0.5"
+                            Padding="10,10">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="8" /></Border.StrokeShape>
+                        <HorizontalStackLayout Spacing="8">
+                            <Ellipse Fill="#FF8888" WidthRequest="8" HeightRequest="8"
+                                     VerticalOptions="Center" />
+                            <Label x:Name="SubInactiveLabel"
+                                   Text="Not paired — connect to SnapStak Desktop"
+                                   FontSize="13" FontAttributes="Bold"
+                                   TextColor="#FF8888" VerticalOptions="Center" />
+                        </HorizontalStackLayout>
+                    </Border>
+
+                    <!-- Pairing section -->
+                    <Label Text="DESKTOP PAIRING"
+                           FontSize="10" FontAttributes="Bold"
+                           TextColor="#888888" CharacterSpacing="0.7"
+                           Margin="0,6,0,0" />
+                    <Label Text="Make sure both devices are on the same WiFi. Press Pair on SnapStak Desktop first — it will show a 6-digit PIN. Enter the PIN below and press Pair."
+                           FontSize="11" TextColor="#888888"
+                           LineBreakMode="WordWrap" />
+
+                    <!-- PIN entry -->
+                    <Entry x:Name="PinEntry"
+                           IsVisible="False"
+                           Placeholder="6-digit PIN"
+                           BackgroundColor="#0A0A0A"
+                           TextColor="#F5A623"
+                           PlaceholderColor="#444444"
+                           FontSize="22" FontAttributes="Bold"
+                           FontFamily="Monospace"
+                           Keyboard="Numeric"
+                           MaxLength="6"
+                           HorizontalTextAlignment="Center" />
+
+                    <!-- Pairing status indicator -->
+                    <Border x:Name="PairingStatusBorder"
+                            IsVisible="False"
+                            BackgroundColor="#0A0A0A"
+                            Stroke="#2A2A3D" StrokeThickness="0.5"
+                            Padding="10,8">
+                        <Border.StrokeShape><RoundRectangle CornerRadius="7" /></Border.StrokeShape>
+                        <Label x:Name="PairingStatusLabel"
+                               Text=""
+                               FontSize="12" TextColor="#7878A0"
+                               LineBreakMode="WordWrap" />
+                    </Border>
+
+                    <!-- Pair button -->
+                    <Button x:Name="PairBtn"
+                            IsVisible="False"
+                            Text="Pair with SnapStak Desktop"
+                            BackgroundColor="#1A1A2E"
+                            TextColor="#F5A623"
+                            BorderColor="#F5A623"
+                            BorderWidth="0.5"
+                            FontSize="13" FontAttributes="Bold"
+                            CornerRadius="7" Padding="16,10"
+                            Clicked="OnPairClicked" />
+
+                    <!-- Unpair button — only shown when paired -->
+                    <Button x:Name="UnpairBtn"
+                            Text="Remove pairing"
+                            BackgroundColor="Transparent"
+                            TextColor="#888888"
+                            BorderColor="#2A2A2A"
+                            BorderWidth="0.5"
+                            FontSize="12"
+                            CornerRadius="7" Padding="13,8"
+                            IsVisible="False"
+                            Clicked="OnUnpairClicked" />
+
+                    <!-- Redirect to Desktop for subscription -->
+                    <Border x:Name="SubscribeRedirectBorder"
+                            IsVisible="True"
+                            BackgroundColor="#0A0A14"
+                            Stroke="#2A2A3D" StrokeThickness="0.5"
+                            Padding="9,9">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="7" />
+                        </Border.StrokeShape>
+                        <Label Text="To subscribe, open SnapStak Desktop on your PC."
+                               FontSize="12" TextColor="#7878A0" LineBreakMode="WordWrap" />
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- ── Design Tool Plugins ────────────────────────────────────── -->
+            <Border BackgroundColor="#141414"
+                    Stroke="#1E1E1E" StrokeThickness="0.5"
+                    Padding="16">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="11" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="8">
+                    <Label Text="DESIGN TOOL PLUGINS"
+                           FontSize="10" FontAttributes="Bold"
+                           TextColor="#888888" CharacterSpacing="0.7" />
+                    <Label Text="Enable the plugins you want. Enabled plugins run automatically on every deconstruct."
+                           FontSize="11" TextColor="#888888" LineBreakMode="WordWrap" />
+
+                    <!-- Penpot -->
+                    <Border x:Name="PenpotPluginRow"
+                            BackgroundColor="#0E0E0E"
+                            Stroke="#1E1E1E" StrokeThickness="0.5"
+                            Padding="10,10">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <HorizontalStackLayout Spacing="8">
+                            <Ellipse x:Name="PenpotDot"
+                                     Fill="#44FF88"
+                                     WidthRequest="7" HeightRequest="7"
+                                     VerticalOptions="Center" />
+                            <Label Text="Penpot"
+                                   FontSize="13" FontAttributes="Bold"
+                                   TextColor="#CCCCCC" VerticalOptions="Center" />
+                            <Label Text=".penpot"
+                                   FontSize="11" TextColor="#777777"
+                                   FontFamily="Monospace" VerticalOptions="Center" />
+                            <Switch x:Name="PenpotSwitch"
+                                    HorizontalOptions="EndAndExpand"
+                                    VerticalOptions="Center"
+                                    Toggled="OnPenpotToggled" />
+                        </HorizontalStackLayout>
+                    </Border>
+
+                    <!-- Figma -->
+                    <Border x:Name="FigmaPluginRow"
+                            BackgroundColor="#0E0E0E"
+                            Stroke="#1E1E1E" StrokeThickness="0.5"
+                            Padding="10,10">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <HorizontalStackLayout Spacing="8">
+                            <Ellipse x:Name="FigmaDot"
+                                     Fill="#44FF88"
+                                     WidthRequest="7" HeightRequest="7"
+                                     VerticalOptions="Center" />
+                            <Label Text="Figma"
+                                   FontSize="13" FontAttributes="Bold"
+                                   TextColor="#CCCCCC" VerticalOptions="Center" />
+                            <Label Text=".figma.svg"
+                                   FontSize="11" TextColor="#777777"
+                                   FontFamily="Monospace" VerticalOptions="Center" />
+                            <Switch x:Name="FigmaSwitch"
+                                    HorizontalOptions="EndAndExpand"
+                                    VerticalOptions="Center"
+                                    Toggled="OnFigmaToggled" />
+                        </HorizontalStackLayout>
+                    </Border>
+
+                    <!-- Canva -->
+                    <Border x:Name="CanvaPluginRow"
+                            BackgroundColor="#0E0E0E"
+                            Stroke="#1E1E1E" StrokeThickness="0.5"
+                            Padding="10,10">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="8" />
+                        </Border.StrokeShape>
+                        <HorizontalStackLayout Spacing="8">
+                            <Ellipse x:Name="CanvaDot"
+                                     Fill="#333333"
+                                     WidthRequest="7" HeightRequest="7"
+                                     VerticalOptions="Center" />
+                            <Label Text="Canva"
+                                   FontSize="13" FontAttributes="Bold"
+                                   TextColor="#CCCCCC" VerticalOptions="Center" />
+                            <Label Text=".canva.pdf"
+                                   FontSize="11" TextColor="#777777"
+                                   FontFamily="Monospace" VerticalOptions="Center" />
+                            <Switch x:Name="CanvaSwitch"
+                                    HorizontalOptions="EndAndExpand"
+                                    VerticalOptions="Center"
+                                    Toggled="OnCanvaToggled" />
+                        </HorizontalStackLayout>
+                    </Border>
+
+                    <Border x:Name="PluginSavedBanner"
+                            IsVisible="False"
+                            BackgroundColor="#0A140A"
+                            Stroke="#1A3A1A" StrokeThickness="0.5"
+                            Padding="7,7">
+                        <Border.StrokeShape>
+                            <RoundRectangle CornerRadius="7" />
+                        </Border.StrokeShape>
+                        <Label Text="✓ Plugin settings saved." FontSize="12" TextColor="#44FF88" />
+                    </Border>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- ── Danger Zone ────────────────────────────────────────────── -->
+            <Border BackgroundColor="#0D0A06"
+                    Stroke="#2A1A0A" StrokeThickness="0.5"
+                    Padding="16">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="11" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="12">
+                    <Label Text="DANGER ZONE"
+                           FontSize="10" FontAttributes="Bold"
+                           TextColor="#C07020" CharacterSpacing="0.7" />
+
+                    <!-- Clear session data -->
+                    <Grid ColumnDefinitions="*,Auto" RowSpacing="4">
+                        <VerticalStackLayout Grid.Column="0" Spacing="2">
+                            <Label Text="Clear all session data"
+                                   FontSize="12" FontAttributes="Bold"
+                                   TextColor="#E07820" />
+                            <Label Text="Permanently deletes all deconstructed components from device storage. Cannot be undone."
+                                   FontSize="11" TextColor="#BBAAAA" LineBreakMode="WordWrap" />
+                        </VerticalStackLayout>
+                        <Button Grid.Column="1"
+                                Text="Clear all data"
+                                BackgroundColor="Transparent"
+                                TextColor="#E07820"
+                                BorderColor="#3A2010"
+                                BorderWidth="0.5"
+                                FontSize="12"
+                                CornerRadius="7"
+                                Padding="13,8"
+                                VerticalOptions="Center"
+                                Clicked="OnClearAllDataClicked" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- ── About ──────────────────────────────────────────────────── -->
+            <Border BackgroundColor="#141414"
+                    Stroke="#1E1E1E" StrokeThickness="0.5"
+                    Padding="16">
+                <Border.StrokeShape>
+                    <RoundRectangle CornerRadius="11" />
+                </Border.StrokeShape>
+                <VerticalStackLayout Spacing="0">
+                    <Label Text="ABOUT"
+                           FontSize="10" FontAttributes="Bold"
+                           TextColor="#888888" CharacterSpacing="0.7"
+                           Margin="0,0,0,11" />
+                    <Grid ColumnDefinitions="140,*" RowDefinitions="Auto,Auto,Auto,Auto,Auto" RowSpacing="0">
+                        <Label Grid.Row="0" Grid.Column="0" Text="Product"
+                               FontSize="12" TextColor="#888888" Padding="0,8" />
+                        <Label Grid.Row="0" Grid.Column="1" Text="SnapStak Mobile · CON10X Engine v1.0"
+                               FontSize="12" TextColor="#BBBBBB" Padding="0,8" />
+
+                        <Label Grid.Row="1" Grid.Column="0" Text="Processing"
+                               FontSize="12" TextColor="#888888" Padding="0,8" />
+                        <Label Grid.Row="1" Grid.Column="1" Text="On your device — nothing leaves your phone"
+                               FontSize="12" TextColor="#BBBBBB" Padding="0,8" />
+
+                        <Label Grid.Row="2" Grid.Column="0" Text="Desktop"
+                               FontSize="12" TextColor="#888888" Padding="0,8" />
+                        <Label Grid.Row="2" Grid.Column="1" Text="SnapStak Desktop · snapstak.ai"
+                               FontSize="12" TextColor="#BBBBBB" Padding="0,8" />
+
+                        <Label Grid.Row="3" Grid.Column="0" Text="Support"
+                               FontSize="12" TextColor="#888888" Padding="0,8" />
+                        <Label Grid.Row="3" Grid.Column="1" Text="support@snapstak.ai"
+                               FontSize="12" TextColor="#38A3F8" Padding="0,8" />
+
+                        <Label Grid.Row="4" Grid.Column="0" Text="Privacy"
+                               FontSize="12" TextColor="#888888" Padding="0,8" />
+                        <Label Grid.Row="4" Grid.Column="1" Text="snapstak.ai/privacy"
+                               FontSize="12" TextColor="#38A3F8" Padding="0,8" />
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- Bottom padding -->
+            <BoxView HeightRequest="24" Color="Transparent" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+    <!-- ── Unpair confirm popup ── -->
+    <Grid x:Name="UnpairConfirmPopup" IsVisible="False" BackgroundColor="#CC000010">
+        <Border BackgroundColor="#13131A"
+                Stroke="#2A2D35" StrokeThickness="1"
+                StrokeShape="RoundRectangle 20"
+                Padding="28,24" WidthRequest="300"
+                VerticalOptions="Center" HorizontalOptions="Center">
+            <VerticalStackLayout Spacing="14">
+                <Border BackgroundColor="#1A0A0A"
+                        Stroke="#EF4444" StrokeThickness="1"
+                        StrokeShape="RoundRectangle 40"
+                        WidthRequest="52" HeightRequest="52"
+                        HorizontalOptions="Center">
+                    <Path Data="M12 2L1 21h22L12 2zm0 3.5L21 19H3L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"
+                          Fill="#EF4444"
+                          WidthRequest="24" HeightRequest="24"
+                          HorizontalOptions="Center" VerticalOptions="Center"
+                          Aspect="Uniform"/>
+                </Border>
+                <Label Text="Remove Pairing"
+                       FontSize="17" FontAttributes="Bold"
+                       TextColor="#F0F0FF" HorizontalTextAlignment="Center"/>
+                <Label Text="Both SnapStak Desktop and this phone must be on the same WiFi. The pairing will be removed from both devices simultaneously."
+                       FontSize="13" TextColor="#888888"
+                       HorizontalTextAlignment="Center" LineBreakMode="WordWrap"/>
+                <BoxView HeightRequest="1" Color="#2A2A3D" Margin="0,4"/>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Button Grid.Column="0" Text="Cancel"
+                            BackgroundColor="#1E1E2E" TextColor="#7878A0"
+                            FontSize="15" CornerRadius="12" HeightRequest="44"
+                            Clicked="OnUnpairCancelClicked"/>
+                    <Button Grid.Column="1" Text="Remove"
+                            BackgroundColor="#1A0A0A" TextColor="#EF4444"
+                            FontSize="15" FontAttributes="Bold"
+                            CornerRadius="12" HeightRequest="44"
+                            Clicked="OnUnpairConfirmClicked"/>
+                </Grid>
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+
+    <!-- ── Unpair error popup ── -->
+    <Grid x:Name="UnpairErrorPopup" IsVisible="False" BackgroundColor="#CC000010">
+        <Border BackgroundColor="#13131A"
+                Stroke="#2A2D35" StrokeThickness="1"
+                StrokeShape="RoundRectangle 20"
+                Padding="28,24" WidthRequest="300"
+                VerticalOptions="Center" HorizontalOptions="Center">
+            <VerticalStackLayout Spacing="14">
+                <Border BackgroundColor="#1A0A0A"
+                        Stroke="#EF4444" StrokeThickness="1"
+                        StrokeShape="RoundRectangle 40"
+                        WidthRequest="52" HeightRequest="52"
+                        HorizontalOptions="Center">
+                    <Label Text="✕" FontSize="24" FontAttributes="Bold"
+                           TextColor="#EF4444"
+                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Border>
+                <Label Text="Cannot Remove Pairing"
+                       FontSize="17" FontAttributes="Bold"
+                       TextColor="#F0F0FF" HorizontalTextAlignment="Center"/>
+                <Label x:Name="UnpairErrorLabel"
+                       FontSize="13" TextColor="#888888"
+                       HorizontalTextAlignment="Center" LineBreakMode="WordWrap"/>
+                <BoxView HeightRequest="1" Color="#2A2A3D" Margin="0,4"/>
+                <Button Text="OK"
+                        BackgroundColor="#1A0A0A" TextColor="#EF4444"
+                        FontSize="15" FontAttributes="Bold"
+                        CornerRadius="12" HeightRequest="44"
+                        Clicked="OnUnpairErrorOkClicked"/>
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+
+    <!-- ── Unpair success popup ── -->
+    <Grid x:Name="UnpairSuccessPopup" IsVisible="False" BackgroundColor="#CC000010">
+        <Border BackgroundColor="#13131A"
+                Stroke="#2A2D35" StrokeThickness="1"
+                StrokeShape="RoundRectangle 20"
+                Padding="28,24" WidthRequest="300"
+                VerticalOptions="Center" HorizontalOptions="Center">
+            <VerticalStackLayout Spacing="14">
+                <Border BackgroundColor="#0A1A0A"
+                        Stroke="#44FF88" StrokeThickness="1"
+                        StrokeShape="RoundRectangle 40"
+                        WidthRequest="52" HeightRequest="52"
+                        HorizontalOptions="Center">
+                    <Label Text="✓" FontSize="24" FontAttributes="Bold"
+                           TextColor="#44FF88"
+                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Border>
+                <Label Text="Pairing Removed"
+                       FontSize="17" FontAttributes="Bold"
+                       TextColor="#F0F0FF" HorizontalTextAlignment="Center"/>
+                <Label Text="Both devices have been successfully unpaired."
+                       FontSize="13" TextColor="#888888"
+                       HorizontalTextAlignment="Center" LineBreakMode="WordWrap"/>
+                <BoxView HeightRequest="1" Color="#2A2A3D" Margin="0,4"/>
+                <Button Text="OK"
+                        BackgroundColor="#0A1A0A" TextColor="#44FF88"
+                        FontSize="15" FontAttributes="Bold"
+                        CornerRadius="12" HeightRequest="44"
+                        Clicked="OnUnpairSuccessOkClicked"/>
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+
+    <!-- ── Clear data confirm popup ── -->
+    <Grid x:Name="ClearDataConfirmPopup" IsVisible="False" BackgroundColor="#CC000010">
+        <Border BackgroundColor="#13131A"
+                Stroke="#2A2D35" StrokeThickness="1"
+                StrokeShape="RoundRectangle 20"
+                Padding="28,24" WidthRequest="300"
+                VerticalOptions="Center" HorizontalOptions="Center">
+            <VerticalStackLayout Spacing="14">
+                <Border BackgroundColor="#1A0A00"
+                        Stroke="#C07020" StrokeThickness="1"
+                        StrokeShape="RoundRectangle 40"
+                        WidthRequest="52" HeightRequest="52"
+                        HorizontalOptions="Center">
+                    <Path Data="M12 2L1 21h22L12 2zm0 3.5L21 19H3L12 5.5zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"
+                          Fill="#C07020"
+                          WidthRequest="24" HeightRequest="24"
+                          HorizontalOptions="Center" VerticalOptions="Center"
+                          Aspect="Uniform"/>
+                </Border>
+                <Label Text="Clear All Data"
+                       FontSize="17" FontAttributes="Bold"
+                       TextColor="#F0F0FF" HorizontalTextAlignment="Center"/>
+                <Label Text="Permanently deletes all deconstructed components from your device. Cannot be undone."
+                       FontSize="13" TextColor="#888888"
+                       HorizontalTextAlignment="Center" LineBreakMode="WordWrap"/>
+                <BoxView HeightRequest="1" Color="#2A2A3D" Margin="0,4"/>
+                <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                    <Button Grid.Column="0" Text="Cancel"
+                            BackgroundColor="#1E1E2E" TextColor="#7878A0"
+                            FontSize="15" CornerRadius="12" HeightRequest="44"
+                            Clicked="OnClearDataCancelClicked"/>
+                    <Button Grid.Column="1" Text="Clear"
+                            BackgroundColor="#1A0A00" TextColor="#E07820"
+                            FontSize="15" FontAttributes="Bold"
+                            CornerRadius="12" HeightRequest="44"
+                            Clicked="OnClearDataConfirmClicked"/>
+                </Grid>
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+
+    <!-- ── Clear data done popup ── -->
+    <Grid x:Name="ClearDataDonePopup" IsVisible="False" BackgroundColor="#CC000010">
+        <Border BackgroundColor="#13131A"
+                Stroke="#2A2D35" StrokeThickness="1"
+                StrokeShape="RoundRectangle 20"
+                Padding="28,24" WidthRequest="300"
+                VerticalOptions="Center" HorizontalOptions="Center">
+            <VerticalStackLayout Spacing="14">
+                <Border BackgroundColor="#0A1A0A"
+                        Stroke="#44FF88" StrokeThickness="1"
+                        StrokeShape="RoundRectangle 40"
+                        WidthRequest="52" HeightRequest="52"
+                        HorizontalOptions="Center">
+                    <Label Text="✓" FontSize="24" FontAttributes="Bold"
+                           TextColor="#44FF88"
+                           HorizontalOptions="Center" VerticalOptions="Center"/>
+                </Border>
+                <Label Text="Done"
+                       FontSize="17" FontAttributes="Bold"
+                       TextColor="#F0F0FF" HorizontalTextAlignment="Center"/>
+                <Label Text="All session data has been cleared."
+                       FontSize="13" TextColor="#888888"
+                       HorizontalTextAlignment="Center" LineBreakMode="WordWrap"/>
+                <BoxView HeightRequest="1" Color="#2A2A3D" Margin="0,4"/>
+                <Button Text="OK"
+                        BackgroundColor="#0A1A0A" TextColor="#44FF88"
+                        FontSize="15" FontAttributes="Bold"
+                        CornerRadius="12" HeightRequest="44"
+                        Clicked="OnClearDataDoneOkClicked"/>
+            </VerticalStackLayout>
+        </Border>
+    </Grid>
+
+    </Grid>
+</ContentPage>

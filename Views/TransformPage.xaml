@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SnapStakMobile.Views.TransformPage"
+             BackgroundColor="#060709">
+    <ContentPage.Resources>
+        <Style x:Key="FwCard" TargetType="Border">
+            <Setter Property="BackgroundColor" Value="#12141A"/>
+            <Setter Property="Stroke" Value="#2A2D35"/>
+            <Setter Property="StrokeThickness" Value="1"/>
+            <Setter Property="StrokeShape" Value="RoundRectangle 16"/>
+            <Setter Property="Padding" Value="6"/>
+            <Setter Property="Margin" Value="0,0,8,8"/>
+            <Setter Property="WidthRequest" Value="80"/>
+            <Setter Property="HeightRequest" Value="72"/>
+            <Setter Property="HorizontalOptions" Value="Start"/>
+        </Style>
+        <Style x:Key="FwLabel" TargetType="Label">
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="TextColor" Value="#7878A0"/>
+            <Setter Property="FontFamily" Value="OpenSansRegular"/>
+            <Setter Property="HorizontalOptions" Value="Center"/>
+            <Setter Property="HorizontalTextAlignment" Value="Center"/>
+        </Style>
+        <Style x:Key="FwIcon" TargetType="Image">
+            <Setter Property="WidthRequest" Value="26"/>
+            <Setter Property="HeightRequest" Value="26"/>
+            <Setter Property="HorizontalOptions" Value="Center"/>
+        </Style>
+    </ContentPage.Resources>
+
+    <Grid RowDefinitions="Auto,*,Auto">
+
+        <!-- Header -->
+        <Border Grid.Row="0"
+                BackgroundColor="#13131A"
+                Stroke="#2A2A3D" StrokeThickness="1"
+                StrokeShape="RoundRectangle 0"
+                Padding="20,16">
+            <Grid ColumnDefinitions="Auto,*">
+                <Border Grid.Column="0"
+                        BackgroundColor="#0D2010"
+                        Stroke="#1A4020" StrokeThickness="1"
+                        StrokeShape="RoundRectangle 20"
+                        Padding="10,5"
+                        VerticalOptions="Center">
+                    <HorizontalStackLayout Spacing="6">
+                        <Ellipse WidthRequest="6" HeightRequest="6"
+                                 Fill="#34C759" VerticalOptions="Center"/>
+                        <Label Text="Deconstruct successful"
+                               FontSize="12" TextColor="#34C759"
+                               FontFamily="OpenSansRegular"
+                               VerticalOptions="Center"/>
+                    </HorizontalStackLayout>
+                </Border>
+                <Label Grid.Column="1"
+                       x:Name="AppNameLabel"
+                       Text=""
+                       FontSize="13" TextColor="#7878A0"
+                       FontFamily="OpenSansRegular"
+                       HorizontalOptions="End"
+                       VerticalOptions="Center"/>
+            </Grid>
+        </Border>
+
+        <!-- Scrollable content -->
+        <ScrollView Grid.Row="1">
+            <VerticalStackLayout Padding="20,28,20,20" Spacing="0">
+
+                <Label Text="Transform"
+                       FontFamily="PoppinsBold"
+                       FontSize="28"
+                       TextColor="#F0F0FF"
+                       Margin="0,0,0,6"/>
+                <Label Text="Choose your target platform, then select a framework."
+                       FontSize="14" TextColor="#7878A0"
+                       FontFamily="OpenSansRegular"
+                       Margin="0,0,0,28"/>
+
+                <!-- Category buttons -->
+                <Border x:Name="BtnWebView"
+                        StrokeThickness="1"
+                        Stroke="#2A2D35"
+                        StrokeShape="RoundRectangle 16"
+                        HeightRequest="90"
+                        BackgroundColor="#12141A"
+                        Margin="0,0,0,10">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnWebViewTapped"/>
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="64,*,32" Padding="16,0">
+                        <Path Grid.Column="0"
+                              Data="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"
+                              Fill="#F5A623"
+                              WidthRequest="32" HeightRequest="32"
+                              HorizontalOptions="Center"
+                              VerticalOptions="Center"
+                              Aspect="Uniform"/>
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="3">
+                            <Label x:Name="WebViewTitle"
+                                   Text="WebView App"
+                                   FontFamily="PoppinsBold"
+                                   FontSize="17"
+                                   TextColor="#F0F0FF"/>
+                            <Label Text="11 web frameworks"
+                                   FontSize="12"
+                                   TextColor="#7878A0"/>
+                        </VerticalStackLayout>
+                        <Label x:Name="WebViewChevron" Grid.Column="2"
+                               Text="&#x203A;" FontSize="22"
+                               TextColor="#7878A0"
+                               VerticalOptions="Center" HorizontalOptions="End"/>
+                    </Grid>
+                </Border>
+
+                <Border x:Name="BtnNative"
+                        StrokeThickness="1"
+                        Stroke="#2A2D35"
+                        StrokeShape="RoundRectangle 16"
+                        HeightRequest="90"
+                        BackgroundColor="#12141A"
+                        Margin="0,0,0,28">
+                    <Border.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnNativeTapped"/>
+                    </Border.GestureRecognizers>
+                    <Grid ColumnDefinitions="64,*,32" Padding="16,0">
+                        <Path Grid.Column="0"
+                              Data="M17 1.01L7 1c-1.1 0-2 .9-2 2v18c0 1.1.9 2 2 2h10c1.1 0 2-.9 2-2V3c0-1.1-.9-1.99-2-1.99zM17 19H7V5h10v14zm-5 1a1 1 0 1 0 0-2 1 1 0 0 0 0 2zm-2-19h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1 0-1z"
+                              Fill="#F5A623"
+                              WidthRequest="32" HeightRequest="32"
+                              HorizontalOptions="Center"
+                              VerticalOptions="Center"
+                              Aspect="Uniform"/>
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="3">
+                            <Label x:Name="NativeTitle"
+                                   Text="Native App"
+                                   FontFamily="PoppinsBold"
+                                   FontSize="17"
+                                   TextColor="#F0F0FF"/>
+                            <Label Text="5 native frameworks"
+                                   FontSize="12"
+                                   TextColor="#7878A0"/>
+                        </VerticalStackLayout>
+                        <Label x:Name="NativeChevron" Grid.Column="2"
+                               Text="&#x203A;" FontSize="22"
+                               TextColor="#7878A0"
+                               VerticalOptions="Center" HorizontalOptions="End"/>
+                    </Grid>
+                </Border>
+
+                <!-- Section label -->
+                <Label x:Name="SectionLabel"
+                       Text=""
+                       FontSize="11" TextColor="#4A4A6A"
+                       FontFamily="OpenSansRegular"
+                       CharacterSpacing="1.5"
+                       Margin="0,0,0,12"
+                       IsVisible="False"/>
+
+                <!-- Web framework grid -->
+                <FlexLayout x:Name="WebFrameworks"
+                            Wrap="Wrap" Direction="Row"
+                            JustifyContent="Start" AlignItems="Start"
+                            IsVisible="False">
+                    <Border Style="{StaticResource FwCard}" x:Name="FwReact">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnFrameworkTapped" CommandParameter="React"/>
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout HorizontalOptions="Center" Spacing="6" VerticalOptions="Center">
+                            <Image Source="react.svg" WidthRequest="26" HeightRequest="26" HorizontalOptions="Center"/>
+                            <Label Text="React" Style="{StaticResource FwLabel}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Style="{StaticResource FwCard}" x:Name="FwNextjs">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnFrameworkTapped" CommandParameter="Next.js"/>
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout HorizontalOptions="Center" Spacing="6" VerticalOptions="Center">
+                            <Image Source="nextdotjs.svg" WidthRequest="26" HeightRequest="26" HorizontalOptions="Center"/>
+                            <Label Text="Next.js" Style="{StaticResource FwLabel}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Style="{StaticResource FwCard}" x:Name="FwVue">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnFrameworkTapped" CommandParameter="Vue"/>
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout HorizontalOptions="Center" Spacing="6" VerticalOptions="Center">
+                            <Image Source="vuedotjs.svg" WidthRequest="26" HeightRequest="26" HorizontalOptions="Center"/>
+                            <Label Text="Vue" Style="{StaticResource FwLabel}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Style="{StaticResource FwCard}" x:Name="FwNuxt">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnFrameworkTapped" CommandParameter="Nuxt"/>
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout HorizontalOptions="Center" Spacing="6" VerticalOptions="Center">
+                            <Image Source="nuxtdotjs.svg" WidthRequest="26" HeightRequest="26" HorizontalOptions="Center"/>
+                            <Label Text="Nuxt" Style="{StaticResource FwLabel}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Style="{StaticResource FwCard}" x:Name="FwAngular">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnFrameworkTapped" CommandParameter="Angular"/>
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout HorizontalOptions="Center" Spacing="6" VerticalOptions="Center">
+                            <Image Source="angular.svg" WidthRequest="26" HeightRequest="26" HorizontalOptions="Center"/>
+                            <Label Text="Angular" Style="{StaticResource FwLabel}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Style="{StaticResource FwCard}" x:Name="FwSvelte">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnFrameworkTapped" CommandParameter="Svelte"/>
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout HorizontalOptions="Center" Spacing="6" VerticalOptions="Center">
+                            <Image Source="svelte.svg" WidthRequest="26" HeightRequest="26" HorizontalOptions="Center"/>
+                            <Label Text="Svelte" Style="{StaticResource FwLabel}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Style="{StaticResource FwCard}" x:Name="FwTailwind">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnFrameworkTapped" CommandParameter="Tailwind"/>
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout HorizontalOptions="Center" Spacing="6" VerticalOptions="Center">
+                            <Image Source="tailwindcss.svg" WidthRequest="26" HeightRequest="26" HorizontalOptions="Center"/>
+                            <Label Text="Tailwind" Style="{StaticResource FwLabel}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Style="{StaticResource FwCard}" x:Name="FwQwik">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnFrameworkTapped" CommandParameter="Qwik"/>
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout HorizontalOptions="Center" Spacing="6" VerticalOptions="Center">
+                            <Image Source="qwik.svg" WidthRequest="26" HeightRequest="26" HorizontalOptions="Center"/>
+                            <Label Text="Qwik" Style="{StaticResource FwLabel}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Style="{StaticResource FwCard}" x:Name="FwAstro">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnFrameworkTapped" CommandParameter="Astro"/>
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout HorizontalOptions="Center" Spacing="6" VerticalOptions="Center">
+                            <Image Source="astro.svg" WidthRequest="26" HeightRequest="26" HorizontalOptions="Center"/>
+                            <Label Text="Astro" Style="{StaticResource FwLabel}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Style="{StaticResource FwCard}" x:Name="FwEmber">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnFrameworkTapped" CommandParameter="Ember"/>
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout HorizontalOptions="Center" Spacing="6" VerticalOptions="Center">
+                            <Image Source="emberdotjs.svg" WidthRequest="26" HeightRequest="26" HorizontalOptions="Center"/>
+                            <Label Text="Ember" Style="{StaticResource FwLabel}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Style="{StaticResource FwCard}" x:Name="FwSolid">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnFrameworkTapped" CommandParameter="Solid"/>
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout HorizontalOptions="Center" Spacing="6" VerticalOptions="Center">
+                            <Image Source="solid.svg" WidthRequest="26" HeightRequest="26" HorizontalOptions="Center"/>
+                            <Label Text="Solid" Style="{StaticResource FwLabel}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                </FlexLayout>
+
+                <!-- Native framework grid -->
+                <FlexLayout x:Name="NativeFrameworks"
+                            Wrap="Wrap" Direction="Row"
+                            JustifyContent="Start" AlignItems="Start"
+                            IsVisible="False">
+                    <Border Style="{StaticResource FwCard}" x:Name="FwReactNative">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnFrameworkTapped" CommandParameter="React Native"/>
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout HorizontalOptions="Center" Spacing="6" VerticalOptions="Center">
+                            <Image Source="react.svg" WidthRequest="26" HeightRequest="26" HorizontalOptions="Center"/>
+                            <Label Text="React Native" Style="{StaticResource FwLabel}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Style="{StaticResource FwCard}" x:Name="FwFlutter">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnFrameworkTapped" CommandParameter="Flutter"/>
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout HorizontalOptions="Center" Spacing="6" VerticalOptions="Center">
+                            <Image Source="flutter.svg" WidthRequest="26" HeightRequest="26" HorizontalOptions="Center"/>
+                            <Label Text="Flutter" Style="{StaticResource FwLabel}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Style="{StaticResource FwCard}" x:Name="FwSwiftUI">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnFrameworkTapped" CommandParameter="SwiftUI"/>
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout HorizontalOptions="Center" Spacing="6" VerticalOptions="Center">
+                            <Image Source="swift.svg" WidthRequest="26" HeightRequest="26" HorizontalOptions="Center"/>
+                            <Label Text="SwiftUI" Style="{StaticResource FwLabel}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Style="{StaticResource FwCard}" x:Name="FwJetpackCompose">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnFrameworkTapped" CommandParameter="Jetpack Compose"/>
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout HorizontalOptions="Center" Spacing="6" VerticalOptions="Center">
+                            <Image Source="jetpackcompose.svg" WidthRequest="26" HeightRequest="26" HorizontalOptions="Center"/>
+                            <Label Text="Jetpack" Style="{StaticResource FwLabel}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                    <Border Style="{StaticResource FwCard}" x:Name="FwNETMAUI">
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="OnFrameworkTapped" CommandParameter=".NET MAUI"/>
+                        </Border.GestureRecognizers>
+                        <VerticalStackLayout HorizontalOptions="Center" Spacing="6" VerticalOptions="Center">
+                            <Image Source="dotnet.svg" WidthRequest="26" HeightRequest="26" HorizontalOptions="Center"/>
+                            <Label Text=".NET MAUI" Style="{StaticResource FwLabel}"/>
+                        </VerticalStackLayout>
+                    </Border>
+                </FlexLayout>
+
+                <!-- ═══════════════════════════════════════════════════════════ -->
+                <!-- Processing panel — shown while pipeline runs               -->
+                <!-- Hidden initially. ShowProcessingState() makes it visible.  -->
+                <!-- ═══════════════════════════════════════════════════════════ -->
+                <Border x:Name="ProcessingPanel"
+                        IsVisible="False"
+                        BackgroundColor="#12141A"
+                        Stroke="#2A2D35" StrokeThickness="1"
+                        StrokeShape="RoundRectangle 16"
+                        Padding="20,18"
+                        Margin="0,24,0,0">
+                    <VerticalStackLayout Spacing="14">
+                        <HorizontalStackLayout Spacing="12" VerticalOptions="Center">
+                            <ActivityIndicator IsRunning="True"
+                                               Color="#F5A623"
+                                               WidthRequest="20" HeightRequest="20"
+                                               VerticalOptions="Center"/>
+                            <Label Text="Generating components..."
+                                   FontFamily="PoppinsBold"
+                                   FontSize="15"
+                                   TextColor="#F0F0FF"
+                                   VerticalOptions="Center"/>
+                        </HorizontalStackLayout>
+                        <!-- Per-component progress bar -->
+                        <ProgressBar x:Name="ProcessingProgress"
+                                     Progress="0"
+                                     ProgressColor="#F5A623"
+                                     HeightRequest="4"/>
+                        <!-- Current component label -->
+                        <Label x:Name="ProcessingDetail"
+                               Text=""
+                               FontSize="12"
+                               TextColor="#7878A0"
+                               FontFamily="OpenSansRegular"/>
+                    </VerticalStackLayout>
+                </Border>
+
+                <!-- ═══════════════════════════════════════════════════════════ -->
+                <!-- Complete panel — shown on SESSION_COMPLETE                  -->
+                <!-- Hidden initially. ShowCompleteState() makes it visible.    -->
+                <!-- ═══════════════════════════════════════════════════════════ -->
+                <Border x:Name="CompletePanel"
+                        IsVisible="False"
+                        BackgroundColor="#0D2010"
+                        Stroke="#1A4020" StrokeThickness="1"
+                        StrokeShape="RoundRectangle 16"
+                        Padding="20,18"
+                        Margin="0,24,0,0">
+                    <VerticalStackLayout Spacing="12">
+                        <Label x:Name="CompleteTitle"
+                               Text="✓ Ready to download"
+                               FontFamily="PoppinsBold"
+                               FontSize="16"
+                               TextColor="#34C759"/>
+                        <Label x:Name="CompleteDetail"
+                               Text=""
+                               FontSize="13"
+                               TextColor="#7878A0"
+                               FontFamily="OpenSansRegular"/>
+                        <!-- Download button -->
+                        <Button x:Name="BtnDownload"
+                                Text="Download package.zip"
+                                BackgroundColor="#34C759"
+                                TextColor="#060709"
+                                FontFamily="OpenSansRegular"
+                                FontAttributes="Bold"
+                                FontSize="14"
+                                CornerRadius="10"
+                                HeightRequest="46"
+                                IsVisible="False"
+                                Clicked="OnDownloadClicked"/>
+                    </VerticalStackLayout>
+                </Border>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Generate button -->
+        <Border Grid.Row="2"
+                BackgroundColor="#13131A"
+                Stroke="#2A2A3D" StrokeThickness="1"
+                StrokeShape="RoundRectangle 0"
+                Padding="20,14">
+            <Button x:Name="BtnGenerate"
+                    Text="Select a framework to generate"
+                    BackgroundColor="#2A2A3D"
+                    TextColor="#4A4A6A"
+                    FontFamily="OpenSansRegular"
+                    FontSize="15"
+                    FontAttributes="Bold"
+                    CornerRadius="12"
+                    HeightRequest="52"
+                    IsEnabled="False"
+                    Clicked="OnGenerateClicked"/>
+        </Border>
+
+    </Grid>
+</ContentPage>

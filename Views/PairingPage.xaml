@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SnapStakMobile.Views.PairingPage"
+             Shell.NavBarIsVisible="False">
+
+    <ContentPage.Background>
+        <RadialGradientBrush Center="0.5,0.35" Radius="0.75">
+            <GradientStop Color="#2A2D35" Offset="0.0"/>
+            <GradientStop Color="#16181F" Offset="0.45"/>
+            <GradientStop Color="#060709" Offset="1.0"/>
+        </RadialGradientBrush>
+    </ContentPage.Background>
+
+    <ScrollView>
+        <VerticalStackLayout VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Spacing="20"
+                             Padding="32,48">
+
+            <!-- Logo -->
+            <Image Source="snapsta_icon.png"
+                   WidthRequest="72"
+                   HeightRequest="90"
+                   HorizontalOptions="Center"
+                   Margin="0,0,0,4"/>
+
+            <!-- Brand -->
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="0" Margin="0,0,0,4">
+                <Label Text="Snap" FontFamily="PoppinsBold" FontSize="26"
+                       TextColor="#FFFFFF" VerticalOptions="Center"/>
+                <Label Text="Stak" FontFamily="PoppinsBold" FontSize="26"
+                       TextColor="#F5A623" VerticalOptions="Center"/>
+            </HorizontalStackLayout>
+
+            <Label Text="Pair with SnapStak Desktop to get started."
+                   FontSize="14" TextColor="#7878A0"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"
+                   LineBreakMode="WordWrap"
+                   Margin="0,0,0,8"/>
+
+            <!-- Instructions card -->
+            <Border BackgroundColor="#141414"
+                    Stroke="#1E1E1E" StrokeThickness="0.5"
+                    Padding="18,14"
+                    WidthRequest="310">
+                <Border.StrokeShape><RoundRectangle CornerRadius="12"/></Border.StrokeShape>
+                <VerticalStackLayout Spacing="10">
+                    <Label Text="HOW TO PAIR"
+                           FontSize="10" FontAttributes="Bold"
+                           TextColor="#555555" CharacterSpacing="0.7"/>
+                    <Label Text="1. Make sure both devices are on the same WiFi network."
+                           FontSize="12" TextColor="#7878A0" LineBreakMode="WordWrap"/>
+                    <Label Text="2. Open SnapStak Desktop and press Pair — it will show a 6-digit PIN."
+                           FontSize="12" TextColor="#7878A0" LineBreakMode="WordWrap"/>
+                    <Label Text="3. Enter the PIN below and press Pair."
+                           FontSize="12" TextColor="#7878A0" LineBreakMode="WordWrap"/>
+                    <Label Text="The PIN expires after 60 seconds and can only be used once."
+                           FontSize="11" TextColor="#444444" LineBreakMode="WordWrap"
+                           Margin="0,4,0,0"/>
+                </VerticalStackLayout>
+            </Border>
+
+            <!-- PIN entry -->
+            <Entry x:Name="PinEntry"
+                   Placeholder="6-digit PIN"
+                   BackgroundColor="#0A0A0A"
+                   TextColor="#F5A623"
+                   PlaceholderColor="#444444"
+                   FontSize="28" FontAttributes="Bold"
+                   FontFamily="Monospace"
+                   Keyboard="Numeric"
+                   MaxLength="6"
+                   HorizontalTextAlignment="Center"
+                   WidthRequest="200"/>
+
+            <!-- Status -->
+            <Border x:Name="StatusBorder"
+                    IsVisible="False"
+                    BackgroundColor="#0A0A0A"
+                    Stroke="#2A2A3D" StrokeThickness="0.5"
+                    Padding="12,10"
+                    WidthRequest="310">
+                <Border.StrokeShape><RoundRectangle CornerRadius="8"/></Border.StrokeShape>
+                <Label x:Name="StatusLabel"
+                       Text=""
+                       FontSize="12" TextColor="#7878A0"
+                       HorizontalTextAlignment="Center"
+                       LineBreakMode="WordWrap"/>
+            </Border>
+
+            <!-- Pair button -->
+            <Button x:Name="PairBtn"
+                    Text="Pair with SnapStak Desktop"
+                    BackgroundColor="#F5A623"
+                    TextColor="#060709"
+                    FontSize="15" FontAttributes="Bold"
+                    CornerRadius="12"
+                    HeightRequest="52"
+                    WidthRequest="310"
+                    Clicked="OnPairClicked"/>
+
+            <Label Text="&#169; 2026 SnapStak. All rights reserved."
+                   FontSize="11" TextColor="#333333"
+                   HorizontalOptions="Center"
+                   Margin="0,16,0,0"/>
+
+        </VerticalStackLayout>
+    </ScrollView>
+
+</ContentPage>

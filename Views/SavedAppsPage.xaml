@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SnapStakMobile.Views.SavedAppsPage"
+             Title="Saved Apps">
+
+    <ContentPage.Background>
+        <SolidColorBrush Color="#0A0A0F"/>
+    </ContentPage.Background>
+
+    <Grid RowDefinitions="Auto,*">
+
+        <!-- Status -->
+        <Label x:Name="StatusLabel" Grid.Row="0"
+               Text="Your saved apps"
+               TextColor="#7878A0" FontSize="12"
+               Margin="20,12,20,6"/>
+
+        <!-- Empty state -->
+        <VerticalStackLayout x:Name="EmptyState" Grid.Row="1"
+                             IsVisible="False"
+                             VerticalOptions="Center" HorizontalOptions="Center"
+                             Spacing="12" Padding="40,0">
+            <Label Text="📱" FontSize="48" HorizontalOptions="Center"/>
+            <Label Text="No Saved Apps" FontSize="18" FontAttributes="Bold"
+                   TextColor="#F0F0FF" HorizontalOptions="Center"/>
+            <Label Text="Tap an app in Scan Apps to save it here for quick access."
+                   TextColor="#7878A0" FontSize="13"
+                   HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+        </VerticalStackLayout>
+
+        <!-- Saved app list -->
+        <CollectionView x:Name="AppCollection" Grid.Row="1"
+                        SelectionMode="Single"
+                        SelectionChanged="OnAppSelected"
+                        Margin="12,4,12,12">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border StrokeThickness="1"
+                            Stroke="#2A2D35"
+                            StrokeShape="RoundRectangle 16"
+                            BackgroundColor="#12141A"
+                            Margin="4,5">
+                        <Grid ColumnDefinitions="64,*,Auto" Padding="12" ColumnSpacing="14">
+
+                            <!-- Icon -->
+                            <Border Grid.Column="0"
+                                    WidthRequest="52" HeightRequest="52"
+                                    StrokeThickness="0" StrokeShape="RoundRectangle 14"
+                                    BackgroundColor="#1C1C27">
+                                <Image Source="{Binding Icon}" Aspect="AspectFit"
+                                       WidthRequest="44" HeightRequest="44"/>
+                            </Border>
+
+                            <!-- Name + URL + Framework -->
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Spacing="3">
+                                <Label Text="{Binding Name}" FontAttributes="Bold"
+                                       FontSize="15" TextColor="#F0F0FF"
+                                       LineBreakMode="TailTruncation"/>
+                                <Label Text="{Binding Url}" FontSize="11"
+                                       TextColor="#1BC8F0" LineBreakMode="TailTruncation"/>
+                                <Label Text="{Binding PackageName}" FontSize="11"
+                                       TextColor="#4A4A6A" LineBreakMode="TailTruncation"/>
+                            </VerticalStackLayout>
+
+                            <!-- Delete button -->
+                            <Button Grid.Column="2"
+                                    Text="✕"
+                                    FontSize="14"
+                                    TextColor="#EF4444"
+                                    BackgroundColor="Transparent"
+                                    WidthRequest="40" HeightRequest="40"
+                                    VerticalOptions="Center"
+                                    Clicked="OnDeleteClicked"
+                                    CommandParameter="{Binding .}"/>
+
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+    </Grid>
+</ContentPage>

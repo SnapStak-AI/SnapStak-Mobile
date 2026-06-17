@@ -1,0 +1,256 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SnapStakMobile.Views.DeconstructPage">
+
+    <Grid RowDefinitions="*,Auto">
+
+        <!-- ── WebView ── -->
+        <WebView x:Name="TargetWebView"
+                 Grid.Row="0"
+                 Navigating="OnNavigating"
+                 Navigated="OnNavigated"/>
+
+        <!-- ── Building App overlay — shown while WebView loads ── -->
+        <Grid x:Name="BuildingOverlay" Grid.Row="0"
+              IsVisible="True" BackgroundColor="#E0060709">
+            <VerticalStackLayout VerticalOptions="Center"
+                                 HorizontalOptions="Center"
+                                 Spacing="16">
+                <ActivityIndicator IsRunning="True"
+                                   Color="#F5A623"
+                                   WidthRequest="44" HeightRequest="44"
+                                   HorizontalOptions="Center"/>
+                <Label Text="Building App"
+                       FontSize="13"
+                       TextColor="#7878A0"
+                       HorizontalOptions="Center"/>
+            </VerticalStackLayout>
+        </Grid>
+
+        <!-- ── Page-load progress bar ── -->
+        <ProgressBar x:Name="LoadingBar" Grid.Row="0"
+                     Progress="0" ProgressColor="#F5A623"
+                     VerticalOptions="Start" HeightRequest="3"
+                     IsVisible="False"/>
+
+        <!-- ── Bottom action bar ── -->
+        <Border Grid.Row="1"
+                BackgroundColor="#13131A"
+                StrokeThickness="0"
+                StrokeShape="RoundRectangle 0">
+            <Grid ColumnDefinitions="*,*" Padding="16,12" ColumnSpacing="12">
+
+                <Button Grid.Column="0"
+                        Style="{StaticResource GhostButton}"
+                        Text="Reload"
+                        TextColor="#FFFFFF"
+                        ImageSource="icon_reload.png"
+                        ContentLayout="Left, 8"
+                        Clicked="OnReloadClicked"/>
+
+                <Button Grid.Column="1"
+                        x:Name="BtnDeconstruct"
+                        Style="{StaticResource OutlineButton}"
+                        Text="Deconstruct This Page"
+                        TextColor="#FFFFFF"
+                        ImageSource="icon_lightning.png"
+                        ContentLayout="Left, 8"
+                        IsEnabled="False"
+                        Clicked="OnDeconstructClicked"/>
+            </Grid>
+        </Border>
+
+
+        <!-- ── Deconstruct progress overlay ── -->
+        <Grid x:Name="ProgressOverlay" Grid.RowSpan="2"
+              IsVisible="False" BackgroundColor="#E0000000">
+            <Border BackgroundColor="#13131A"
+                    Stroke="#2A2A3D" StrokeThickness="1"
+                    StrokeShape="RoundRectangle 20"
+                    Padding="32,28"
+                    WidthRequest="280"
+                    VerticalOptions="Center" HorizontalOptions="Center">
+                <VerticalStackLayout Spacing="16">
+                    <ActivityIndicator IsRunning="True" Color="#F5A623"
+                                       WidthRequest="40" HeightRequest="40"
+                                       HorizontalOptions="Center"/>
+                    <Label x:Name="ProgressTitle" Text="Deconstructing..."
+                           FontSize="17" FontAttributes="Bold" TextColor="#F0F0FF"
+                           HorizontalTextAlignment="Center"/>
+                    <Label x:Name="ProgressDetail" Text="Scanning page content..."
+                           FontSize="13" TextColor="#7878A0"
+                           HorizontalTextAlignment="Center"/>
+                    <HorizontalStackLayout HorizontalOptions="Center" Spacing="8" Margin="0,4,0,0">
+                        <Ellipse x:Name="Step1Dot" WidthRequest="8" HeightRequest="8"
+                                 Fill="#F5A623"/>
+                        <Ellipse x:Name="Step2Dot" WidthRequest="8" HeightRequest="8"
+                                 Fill="Transparent" Stroke="#F5A623" StrokeThickness="1.5"/>
+                        <Ellipse x:Name="Step3Dot" WidthRequest="8" HeightRequest="8"
+                                 Fill="Transparent" Stroke="#2A2A3D" StrokeThickness="1.5"/>
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        <!-- ── Error popup ── -->
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        <Grid x:Name="ErrorPopup" Grid.RowSpan="2"
+              IsVisible="False" BackgroundColor="#CC000010">
+            <Border BackgroundColor="#13131A"
+                    Stroke="#2A2A3D" StrokeThickness="1"
+                    StrokeShape="RoundRectangle 20"
+                    Padding="28,24"
+                    WidthRequest="300"
+                    VerticalOptions="Center" HorizontalOptions="Center">
+                <VerticalStackLayout Spacing="14">
+
+                    <Border BackgroundColor="#1E0A0A"
+                            Stroke="#FF3B30" StrokeThickness="1"
+                            StrokeShape="RoundRectangle 40"
+                            WidthRequest="52" HeightRequest="52"
+                            HorizontalOptions="Center">
+                        <Label Text="✕"
+                               FontSize="22" FontAttributes="Bold"
+                               TextColor="#FF3B30"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"/>
+                    </Border>
+
+                    <Label x:Name="ErrorTitle"
+                           Text="Error"
+                           FontSize="17" FontAttributes="Bold"
+                           TextColor="#F0F0FF"
+                           HorizontalTextAlignment="Center"/>
+
+                    <Label x:Name="ErrorMessage"
+                           Text=""
+                           FontSize="13" TextColor="#7878A0"
+                           HorizontalTextAlignment="Center"
+                           LineBreakMode="WordWrap"/>
+
+                    <BoxView HeightRequest="1" Color="#2A2A3D" Margin="0,4"/>
+
+                    <Button Text="OK"
+                            BackgroundColor="#1E1E2E"
+                            TextColor="#F5A623"
+                            FontSize="15" FontAttributes="Bold"
+                            CornerRadius="12"
+                            HeightRequest="44"
+                            Clicked="OnErrorPopupOkClicked"/>
+
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        <!-- ── Success popup ── -->
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        <Grid x:Name="SuccessPopup" Grid.RowSpan="2"
+              IsVisible="False" BackgroundColor="#CC000010">
+            <Border BackgroundColor="#13131A"
+                    Stroke="#2A2A3D" StrokeThickness="1"
+                    StrokeShape="RoundRectangle 20"
+                    Padding="28,24"
+                    WidthRequest="300"
+                    VerticalOptions="Center" HorizontalOptions="Center">
+                <VerticalStackLayout Spacing="14">
+
+                    <Border BackgroundColor="#1E1500"
+                            Stroke="#F5A623" StrokeThickness="1"
+                            StrokeShape="RoundRectangle 40"
+                            WidthRequest="52" HeightRequest="52"
+                            HorizontalOptions="Center">
+                        <Label Text="✓"
+                               FontSize="24" FontAttributes="Bold"
+                               TextColor="#F5A623"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"/>
+                    </Border>
+
+                    <Label Text="Success"
+                           FontSize="17" FontAttributes="Bold"
+                           TextColor="#F0F0FF"
+                           HorizontalTextAlignment="Center"/>
+
+                    <Label x:Name="SuccessMessage"
+                           Text=""
+                           FontSize="13" TextColor="#7878A0"
+                           HorizontalTextAlignment="Center"
+                           LineBreakMode="WordWrap"/>
+
+                    <BoxView HeightRequest="1" Color="#2A2A3D" Margin="0,4"/>
+
+                    <Button Text="Transform"
+                            BackgroundColor="#F5A623"
+                            TextColor="#060709"
+                            FontSize="15" FontAttributes="Bold"
+                            CornerRadius="12"
+                            HeightRequest="44"
+                            Clicked="OnSuccessTransformClicked"/>
+
+                    <Button Text="Done"
+                            BackgroundColor="Transparent"
+                            TextColor="#7878A0"
+                            FontSize="13"
+                            CornerRadius="12"
+                            HeightRequest="36"
+                            Clicked="OnSuccessPopupDoneClicked"/>
+
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        <!-- ── Auth failed popup ── -->
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        <Grid x:Name="AuthPopup" Grid.RowSpan="2"
+              IsVisible="False" BackgroundColor="#CC000010">
+            <Border BackgroundColor="#13131A"
+                    Stroke="#2A2A3D" StrokeThickness="1"
+                    StrokeShape="RoundRectangle 20"
+                    Padding="28,24"
+                    WidthRequest="300"
+                    VerticalOptions="Center" HorizontalOptions="Center">
+                <VerticalStackLayout Spacing="14">
+
+                    <Border BackgroundColor="#1E1500"
+                            Stroke="#F5A623" StrokeThickness="1"
+                            StrokeShape="RoundRectangle 40"
+                            WidthRequest="52" HeightRequest="52"
+                            HorizontalOptions="Center">
+                        <Label Text="⚠"
+                               FontSize="22"
+                               TextColor="#F5A623"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"/>
+                    </Border>
+
+                    <Label Text="Authentication Failed"
+                           FontSize="17" FontAttributes="Bold"
+                           TextColor="#F0F0FF"
+                           HorizontalTextAlignment="Center"/>
+
+                    <Label x:Name="AuthMessage"
+                           Text=""
+                           FontSize="13" TextColor="#7878A0"
+                           HorizontalTextAlignment="Center"
+                           LineBreakMode="WordWrap"/>
+
+                    <BoxView HeightRequest="1" Color="#2A2A3D" Margin="0,4"/>
+
+                    <Button Text="Sign In Again"
+                            BackgroundColor="#1E1500"
+                            TextColor="#F5A623"
+                            FontSize="15" FontAttributes="Bold"
+                            CornerRadius="12"
+                            HeightRequest="44"
+                            Clicked="OnAuthPopupSignInClicked"/>
+
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+
+    </Grid>
+</ContentPage>

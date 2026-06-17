@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SnapStakMobile.Views.ScanPage"
+             Shell.NavBarIsVisible="False">
+
+    <ContentPage.Background>
+        <RadialGradientBrush Center="0.5,0.2" Radius="0.8">
+            <GradientStop Color="#1A1D26" Offset="0.0"/>
+            <GradientStop Color="#0A0B0F" Offset="1.0"/>
+        </RadialGradientBrush>
+    </ContentPage.Background>
+
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,*,Auto">
+
+        <!-- ── Header ── -->
+        <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" Padding="16,52,16,0">
+            <Border Grid.Column="0"
+                    StrokeThickness="1" Stroke="#2A2D3A"
+                    StrokeShape="RoundRectangle 10"
+                    BackgroundColor="#12141C"
+                    Padding="10,8" VerticalOptions="Center">
+                <Label Text="←" FontSize="16" TextColor="#7878A0">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnBackClicked"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </Border>
+
+            <VerticalStackLayout Grid.Column="1"
+                                 HorizontalOptions="Center"
+                                 VerticalOptions="Center" Spacing="2">
+                <HorizontalStackLayout HorizontalOptions="Center" Spacing="0">
+                    <Label Text="Snap" FontFamily="PoppinsBold" FontSize="18" TextColor="#FFFFFF"/>
+                    <Label Text="Stak" FontFamily="PoppinsBold" FontSize="18" TextColor="#F5A623"/>
+                </HorizontalStackLayout>
+                <Label Text="APP SCANNER" FontSize="9" TextColor="#4A4A6A"
+                       HorizontalOptions="Center" CharacterSpacing="3"/>
+            </VerticalStackLayout>
+
+            <!-- Found badge -->
+            <Border Grid.Column="2"
+                    x:Name="DetectedBadge"
+                    IsVisible="False"
+                    StrokeThickness="1" Stroke="#F5A623"
+                    StrokeShape="RoundRectangle 10"
+                    BackgroundColor="#1A160A"
+                    Padding="10,6" VerticalOptions="Center">
+                <HorizontalStackLayout Spacing="5">
+                    <Label Text="●" TextColor="#F5A623" FontSize="8" VerticalOptions="Center"/>
+                    <Label x:Name="DetectedBadgeLabel"
+                           Text="0 found"
+                           FontFamily="PoppinsBold" FontSize="11" TextColor="#F5A623"/>
+                </HorizontalStackLayout>
+            </Border>
+        </Grid>
+
+        <!-- ── Status card ── -->
+        <Border Grid.Row="1"
+                Margin="16,20,16,0"
+                StrokeThickness="1" Stroke="#1E2130"
+                StrokeShape="RoundRectangle 16"
+                BackgroundColor="#0E1018">
+            <Grid RowDefinitions="Auto,Auto,Auto,Auto" Padding="20,16" RowSpacing="10">
+
+                <!-- Phase + spinner -->
+                <Grid Grid.Row="0" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="12">
+                    <ActivityIndicator x:Name="ScanSpinner"
+                                       Grid.Column="0"
+                                       IsRunning="True" IsVisible="True"
+                                       Color="#F5A623"
+                                       WidthRequest="18" HeightRequest="18"
+                                       VerticalOptions="Center"/>
+                    <Label x:Name="ScanPhaseLabel"
+                           Grid.Column="1"
+                           Text="Preparing..."
+                           FontFamily="PoppinsBold" FontSize="13" TextColor="#F0F0FF"
+                           VerticalOptions="Center"/>
+                    <Label x:Name="ScanCountLabel"
+                           Grid.Column="2"
+                           Text=""
+                           FontSize="11" TextColor="#4A4A6A"
+                           VerticalOptions="Center"/>
+                </Grid>
+
+                <!-- Current app being inspected -->
+                <Label x:Name="StatusLabel"
+                       Grid.Row="1"
+                       Text=""
+                       FontSize="11" TextColor="#4A4A6A"
+                       LineBreakMode="TailTruncation"/>
+
+                <!-- Progress bar -->
+                <ProgressBar x:Name="ProgressBar"
+                             Grid.Row="2"
+                             Progress="0"
+                             ProgressColor="#F5A623"
+                             HeightRequest="3"
+                             ScaleY="1"/>
+
+                <!-- Stats row: inspected / skipped / triaged / found -->
+                <Grid Grid.Row="3" ColumnDefinitions="*,*,*,*" x:Name="StatsRow">
+
+                    <VerticalStackLayout Grid.Column="0" HorizontalOptions="Start" Spacing="2">
+                        <Label x:Name="InspectedCountLabel"
+                               Text="0"
+                               FontFamily="PoppinsBold" FontSize="15" TextColor="#F0F0FF"/>
+                        <Label Text="INSPECTED" FontSize="9" TextColor="#4A4A6A" CharacterSpacing="1"/>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Grid.Column="1" HorizontalOptions="Center" Spacing="2">
+                        <Label x:Name="SkippedCountLabel"
+                               Text="0"
+                               FontFamily="PoppinsBold" FontSize="15" TextColor="#4A4A6A"/>
+                        <Label Text="SKIPPED" FontSize="9" TextColor="#4A4A6A" CharacterSpacing="1"/>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Grid.Column="2" HorizontalOptions="Center" Spacing="2">
+                        <Label x:Name="TriagedCountLabel"
+                               Text="0"
+                               FontFamily="PoppinsBold" FontSize="15" TextColor="#4A4A6A"/>
+                        <Label Text="NATIVE" FontSize="9" TextColor="#4A4A6A" CharacterSpacing="1"/>
+                    </VerticalStackLayout>
+
+                    <VerticalStackLayout Grid.Column="3" HorizontalOptions="End" Spacing="2">
+                        <Label x:Name="FoundCountLabel"
+                               Text="0"
+                               FontFamily="PoppinsBold" FontSize="15" TextColor="#F5A623"/>
+                        <Label Text="FOUND" FontSize="9" TextColor="#4A4A6A" CharacterSpacing="1"/>
+                    </VerticalStackLayout>
+
+                </Grid>
+
+            </Grid>
+        </Border>
+
+        <!-- ── Search — only after scan completes ── -->
+        <Border Grid.Row="2"
+                x:Name="SearchContainer"
+                IsVisible="False"
+                Margin="16,12,16,0"
+                StrokeThickness="1" Stroke="#1E2130"
+                StrokeShape="RoundRectangle 12"
+                BackgroundColor="#0E1018">
+            <SearchBar x:Name="SearchBox"
+                       Placeholder="Search detected apps..."
+                       PlaceholderColor="#3A3A5A"
+                       TextColor="#F0F0FF"
+                       BackgroundColor="Transparent"
+                       TextChanged="OnSearchChanged"
+                       HeightRequest="44"/>
+        </Border>
+
+        <!-- ── Results section header ── -->
+        <Grid Grid.Row="3"
+              x:Name="ResultsHeader"
+              IsVisible="False"
+              ColumnDefinitions="*,Auto"
+              Margin="20,16,20,4">
+            <Label Grid.Column="0"
+                   Text="DETECTED APPS"
+                   FontSize="10" TextColor="#4A4A6A"
+                   CharacterSpacing="2" VerticalOptions="Center"/>
+            <Label Grid.Column="1"
+                   x:Name="ResultsCountLabel"
+                   Text="" FontSize="10" TextColor="#4A4A6A"
+                   VerticalOptions="Center"/>
+        </Grid>
+
+        <!-- ── Empty state ── -->
+        <VerticalStackLayout x:Name="EmptyState"
+                             Grid.Row="4"
+                             IsVisible="False"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Spacing="12" Padding="40,0">
+            <Border StrokeThickness="1" Stroke="#1E2130"
+                    StrokeShape="RoundRectangle 24"
+                    BackgroundColor="#0E1018"
+                    WidthRequest="72" HeightRequest="72"
+                    HorizontalOptions="Center">
+                <Label Text="🔍" FontSize="32"
+                       HorizontalOptions="Center" VerticalOptions="Center"/>
+            </Border>
+            <Label x:Name="EmptyTitleLabel"
+                   Text="No New Apps Found"
+                   FontFamily="PoppinsBold" FontSize="17" TextColor="#F0F0FF"
+                   HorizontalOptions="Center"/>
+            <Label x:Name="EmptySubLabel"
+                   Text=""
+                   FontSize="12" TextColor="#4A4A6A"
+                   HorizontalOptions="Center" HorizontalTextAlignment="Center"/>
+        </VerticalStackLayout>
+
+        <!-- ── Detected apps list ── -->
+        <CollectionView x:Name="AppCollection"
+                        Grid.Row="4"
+                        SelectionMode="Single"
+                        SelectionChanged="OnAppSelected"
+                        IsVisible="False"
+                        Margin="12,0,12,12">
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Border StrokeThickness="1" Stroke="#1A1D26"
+                            StrokeShape="RoundRectangle 14"
+                            BackgroundColor="#0E1018"
+                            Margin="4,4">
+                        <Grid ColumnDefinitions="68,*,Auto"
+                              Padding="14,12" ColumnSpacing="12">
+
+                            <Border Grid.Column="0"
+                                    WidthRequest="48" HeightRequest="48"
+                                    StrokeThickness="0" StrokeShape="RoundRectangle 12"
+                                    BackgroundColor="#161820"
+                                    HorizontalOptions="Center" VerticalOptions="Center">
+                                <Image Source="{Binding Icon}" Aspect="AspectFit"
+                                       WidthRequest="40" HeightRequest="40"/>
+                            </Border>
+
+                            <VerticalStackLayout Grid.Column="1"
+                                                 VerticalOptions="Center" Spacing="3">
+                                <Label Text="{Binding Name}"
+                                       FontFamily="PoppinsBold"
+                                       FontSize="14" TextColor="#F0F0FF"
+                                       LineBreakMode="TailTruncation"/>
+                                <Label Text="{Binding PackageName}"
+                                       FontSize="10" TextColor="#3A3A5A"
+                                       LineBreakMode="TailTruncation"/>
+                                <Label Text="{Binding ExtractedUrl}"
+                                       FontSize="10" TextColor="#1BC8F0"
+                                       LineBreakMode="TailTruncation"
+                                       IsVisible="{Binding ExtractedUrl, Converter={StaticResource StringNotNullConverter}}"/>
+                            </VerticalStackLayout>
+
+                            <Border Grid.Column="2" VerticalOptions="Center"
+                                    StrokeThickness="1"
+                                    Stroke="{Binding FrameworkBadgeColor, Converter={StaticResource HexToColorConverter}}"
+                                    StrokeShape="RoundRectangle 8"
+                                    Padding="8,4" BackgroundColor="Transparent">
+                                <Label Text="{Binding FrameworkBadge}"
+                                       FontSize="10" FontFamily="PoppinsBold"
+                                       TextColor="{Binding FrameworkBadgeColor, Converter={StaticResource HexToColorConverter}}"/>
+                            </Border>
+
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <BoxView Grid.Row="5" HeightRequest="16" Color="Transparent"/>
+
+    </Grid>
+</ContentPage>

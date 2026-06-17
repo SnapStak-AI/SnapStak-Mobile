@@ -1,0 +1,52 @@
+{
+  "signatures": [
+    {
+      "framework": "Capacitor",
+      "color": "#4F8EF7",
+      "classMarkers": [ "com.getcapacitor" ],
+      "appIdPrefix": "",
+      "file": "assets/capacitor.config.json",
+      "urlKeys": [ "server.url", "server.hostname" ],
+      "localIndexPaths": [ "assets/public/index.html", "assets/www/index.html", "assets/index.html" ]
+    },
+    {
+      "framework": "Cordova",
+      "color": "#10B981",
+      "classMarkers": [ "org.apache.cordova" ],
+      "appIdPrefix": "",
+      "file": "assets/www/cordova.js",
+      "urlKeys": [ "content.src" ],
+      "localIndexPaths": [ "assets/www/index.html", "assets/public/index.html", "assets/index.html" ]
+    },
+    {
+      "framework": "Median",
+      "color": "#06B6D4",
+      "classMarkers": [ "io.gonative.android" ],
+      "appIdPrefix": "",
+      "file": "assets/appConfig.json",
+      "urlKeys": [ "initialUrl" ],
+      "localIndexPaths": []
+    },
+    {
+      "framework": "WebToApp",
+      "color": "#F97316",
+      "classMarkers": [ "com.neurondigital", "com.webtoapp" ],
+      "appIdPrefix": "",
+      "file": "assets/config.json",
+      "urlKeys": [ "url", "initialUrl" ],
+      "localIndexPaths": []
+    }
+  ],
+  "appIdLabels": [
+    {
+      "appIdPrefix": "app.lovable.",
+      "framework": "Lovable",
+      "color": "#EC4899"
+    },
+    {
+      "appIdPrefix": "app.base44.",
+      "framework": "Base44",
+      "color": "#F5A623"
+    }
+  ]
+}

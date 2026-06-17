@@ -1,0 +1,464 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SnapStakMobile.Views.AppListPage"
+             Shell.NavBarIsVisible="False">
+
+    <ContentPage.Background>
+        <RadialGradientBrush Center="0.5,0.35" Radius="0.75">
+            <GradientStop Color="#2A2D35" Offset="0.0"/>
+            <GradientStop Color="#16181F" Offset="0.45"/>
+            <GradientStop Color="#060709" Offset="1.0"/>
+        </RadialGradientBrush>
+    </ContentPage.Background>
+
+    <Grid RowDefinitions="*,Auto">
+        <!-- Loading state -->
+        <VerticalStackLayout x:Name="LoadingState"
+                             Grid.Row="0"
+                             IsVisible="True"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Spacing="16">
+            <ActivityIndicator IsRunning="True"
+                               Color="#F5A623"
+                               WidthRequest="36" HeightRequest="36"
+                               HorizontalOptions="Center"/>
+            <Label Text="Initialising..."
+                   FontSize="13"
+                   TextColor="#7878A0"
+                   HorizontalOptions="Center"/>
+        </VerticalStackLayout>
+
+        <!-- Error state -->
+        <VerticalStackLayout x:Name="ErrorState"
+                             Grid.Row="0"
+                             IsVisible="False"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Spacing="16"
+                             Padding="40,0">
+            <Label Text="&#x26A0;&#xFE0F;"
+                   FontSize="48"
+                   HorizontalOptions="Center"/>
+            <Label x:Name="ErrorLabel"
+                   Text=""
+                   FontSize="14"
+                   TextColor="#EF4444"
+                   HorizontalOptions="Center"
+                   HorizontalTextAlignment="Center"/>
+            <Border StrokeThickness="1"
+                    Stroke="#2A2D35"
+                    StrokeShape="RoundRectangle 12"
+                    BackgroundColor="#12141A"
+                    Padding="20,12">
+                <Label Text="Retry"
+                       FontFamily="PoppinsBold"
+                       FontSize="15"
+                       TextColor="#F5A623"
+                       HorizontalOptions="Center">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnRetryClicked"/>
+                    </Label.GestureRecognizers>
+                </Label>
+            </Border>
+        </VerticalStackLayout>
+
+        <!-- Main content -->
+        <VerticalStackLayout x:Name="MainContent"
+                             Grid.Row="0"
+                             IsVisible="False"
+                             VerticalOptions="Center"
+                             HorizontalOptions="Center"
+                             Spacing="20"
+                             Padding="32,0">
+
+            <!-- Logo -->
+            <Image Source="snapsta_icon.png"
+                   WidthRequest="80"
+                   HeightRequest="100"
+                   HorizontalOptions="Center"
+                   Margin="0,0,0,4"/>
+
+            <!-- Brand -->
+            <HorizontalStackLayout HorizontalOptions="Center" Spacing="0" Margin="0,0,0,8">
+                <Label Text="Snap"
+                       FontFamily="PoppinsBold"
+                       FontSize="28"
+                       TextColor="#FFFFFF"
+                       VerticalOptions="Center"/>
+                <Label Text="Stak"
+                       FontFamily="PoppinsBold"
+                       FontSize="28"
+                       TextColor="#F5A623"
+                       VerticalOptions="Center"/>
+            </HorizontalStackLayout>
+
+            <!-- Scan Apps -->
+            <Border x:Name="ScanAppsBtn"
+                    StrokeThickness="1"
+                    Stroke="#2A2D35"
+                    StrokeShape="RoundRectangle 16"
+                    WidthRequest="300"
+                    HeightRequest="90"
+                    BackgroundColor="#12141A">
+                <Grid ColumnDefinitions="64,*,32" Padding="16,0">
+                    <Path Grid.Column="0"
+                          Data="M15.5 2C8.596 2 3 7.596 3 14.5S8.596 27 15.5 27c3.237 0 6.187-1.23 8.4-3.243l6.172 6.172a1.5 1.5 0 102.121-2.121l-6.172-6.172A12.456 12.456 0 0028 15.5C28 8.596 22.404 3 15.5 3zm0 3C21.299 5 26 9.701 26 15.5S21.299 26 15.5 26 5 21.299 5 15.5 9.701 5 15.5 5z"
+                          Fill="#F5A623"
+                          WidthRequest="32" HeightRequest="32"
+                          HorizontalOptions="Center"
+                          VerticalOptions="Center"
+                          Aspect="Uniform"/>
+                    <VerticalStackLayout Grid.Column="1"
+                                         VerticalOptions="Center"
+                                         Spacing="3">
+                        <Label Text="Scan Apps"
+                               FontFamily="PoppinsBold"
+                               FontSize="17"
+                               TextColor="#F0F0FF"/>
+                        <Label Text="Find WebView apps on device"
+                               FontSize="12"
+                               TextColor="#7878A0"/>
+                    </VerticalStackLayout>
+                    <!-- Spinner — shown while navigating -->
+                    <ActivityIndicator x:Name="ScanAppsSpinner"
+                                       Grid.Column="2"
+                                       Color="#F5A623"
+                                       WidthRequest="20" HeightRequest="20"
+                                       IsRunning="False" IsVisible="False"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="End"/>
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnScanAppsClicked"/>
+                    </Grid.GestureRecognizers>
+                </Grid>
+            </Border>
+
+            <!-- Saved Apps -->
+            <Border x:Name="SavedAppsBtn"
+                    StrokeThickness="1"
+                    Stroke="#2A2D35"
+                    StrokeShape="RoundRectangle 16"
+                    WidthRequest="300"
+                    HeightRequest="90"
+                    BackgroundColor="#12141A">
+                <Grid ColumnDefinitions="64,*,32" Padding="16,0">
+                    <Path Grid.Column="0"
+                          Data="M17 2H7C5.343 2 4 3.343 4 5v22c0 1.657 1.343 3 3 3h10c1.657 0 3-1.343 3-3V5c0-1.657-1.343-3-3-3zm1 22H6V6h12v18zm-5 3a1 1 0 110-2 1 1 0 010 2zm-2-21h4a.5.5 0 010 1h-4a.5.5 0 010-1z"
+                          Fill="#F5A623"
+                          WidthRequest="32" HeightRequest="32"
+                          HorizontalOptions="Center"
+                          VerticalOptions="Center"
+                          Aspect="Uniform"/>
+                    <VerticalStackLayout Grid.Column="1"
+                                         VerticalOptions="Center"
+                                         Spacing="3">
+                        <Label Text="Saved Apps"
+                               FontFamily="PoppinsBold"
+                               FontSize="17"
+                               TextColor="#F0F0FF"/>
+                        <Label x:Name="SavedCountLabel"
+                               Text="Loading..."
+                               FontSize="12"
+                               TextColor="#7878A0"/>
+                    </VerticalStackLayout>
+                    <!-- Spinner — shown while navigating -->
+                    <ActivityIndicator x:Name="SavedAppsSpinner"
+                                       Grid.Column="2"
+                                       Color="#F5A623"
+                                       WidthRequest="20" HeightRequest="20"
+                                       IsRunning="False" IsVisible="False"
+                                       VerticalOptions="Center"
+                                       HorizontalOptions="End"/>
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnSavedAppsClicked"/>
+                    </Grid.GestureRecognizers>
+                </Grid>
+            </Border>
+
+            <!-- Reset Scan History -->
+            <Border x:Name="ResetScanBtn"
+                    StrokeThickness="1"
+                    Stroke="#2A2D35"
+                    StrokeShape="RoundRectangle 16"
+                    WidthRequest="300"
+                    HeightRequest="72"
+                    BackgroundColor="#12141A">
+                <Grid ColumnDefinitions="64,*" Padding="16,0">
+                    <Path Grid.Column="0"
+                          Data="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46A7.93 7.93 0 0020 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74A7.93 7.93 0 004 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"
+                          Fill="#F5A623"
+                          WidthRequest="28" HeightRequest="28"
+                          HorizontalOptions="Center"
+                          VerticalOptions="Center"
+                          Aspect="Uniform"/>
+                    <VerticalStackLayout Grid.Column="1"
+                                         VerticalOptions="Center"
+                                         Spacing="2">
+                        <Label Text="Reset Scan History"
+                               FontFamily="PoppinsBold"
+                               FontSize="15"
+                               TextColor="#F0F0FF"/>
+                        <Label Text="Re-inspect all apps on next scan"
+                               FontSize="11"
+                               TextColor="#7878A0"/>
+                    </VerticalStackLayout>
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnResetScanClicked"/>
+                    </Grid.GestureRecognizers>
+                </Grid>
+            </Border>
+
+            <!-- Settings -->
+            <Border x:Name="SettingsBtn"
+                    StrokeThickness="1"
+                    Stroke="#2A2D35"
+                    StrokeShape="RoundRectangle 16"
+                    WidthRequest="300"
+                    HeightRequest="72"
+                    BackgroundColor="#12141A">
+                <Grid ColumnDefinitions="64,*" Padding="16,0">
+                    <Path Grid.Column="0"
+                          Data="M24 13.616v-3.232c-1.651-.587-2.694-.752-3.219-2.019v-.001c-.527-1.271.1-2.134.847-3.707l-2.285-2.285c-1.561.742-2.433 1.375-3.707.847h-.001C14.369 2.754 14.204 1.712 13.616 0h-3.232c-.586 1.648-.75 2.692-2.016 3.219h-.001C7.096 3.745 6.233 3.12 4.659 2.371L2.371 4.659c.744 1.567 1.375 2.434.847 3.707-.527 1.271-1.572 1.434-3.218 2.016v3.232c1.648.587 2.692.751 3.219 2.016.529 1.271-.1 2.134-.847 3.707l2.285 2.286c1.562-.743 2.434-1.375 3.707-.847h.001c1.27.526 1.435 1.571 2.016 3.219h3.232c.586-1.648.75-2.693 2.016-3.219h.001c1.271-.528 2.134.099 3.707.847l2.285-2.286c-.744-1.568-1.375-2.434-.847-3.707.527-1.271 1.572-1.429 3.219-2.016zM12 16c-2.209 0-4-1.791-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4z"
+                          Fill="#F5A623"
+                          WidthRequest="28" HeightRequest="28"
+                          HorizontalOptions="Center"
+                          VerticalOptions="Center"
+                          Aspect="Uniform"/>
+                    <VerticalStackLayout Grid.Column="1"
+                                         VerticalOptions="Center"
+                                         Spacing="2">
+                        <Label Text="Settings"
+                               FontFamily="PoppinsBold"
+                               FontSize="15"
+                               TextColor="#F0F0FF"/>
+                        <Label Text="Configure export plugins"
+                               FontSize="11"
+                               TextColor="#7878A0"/>
+                    </VerticalStackLayout>
+                    <Grid.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="OnSettingsClicked"/>
+                    </Grid.GestureRecognizers>
+                </Grid>
+            </Border>
+
+        </VerticalStackLayout>
+
+        <!-- Copyright -->
+        <Label Grid.Row="1"
+               Text="&#169; 2026 SnapStak. All rights reserved."
+               FontSize="11"
+               TextColor="#7A7A7A"
+               HorizontalOptions="Center"
+               Margin="0,0,0,24"/>
+
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        <!-- ── Reset confirm popup ── -->
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        <Grid x:Name="ResetConfirmPopup" Grid.RowSpan="2"
+              IsVisible="False" BackgroundColor="#CC000010">
+            <Border BackgroundColor="#13131A"
+                    Stroke="#2A2D35" StrokeThickness="1"
+                    StrokeShape="RoundRectangle 20"
+                    Padding="28,24"
+                    WidthRequest="300"
+                    VerticalOptions="Center" HorizontalOptions="Center">
+                <VerticalStackLayout Spacing="14">
+                    <Border BackgroundColor="#1E1500"
+                            Stroke="#F5A623" StrokeThickness="1"
+                            StrokeShape="RoundRectangle 40"
+                            WidthRequest="52" HeightRequest="52"
+                            HorizontalOptions="Center">
+                        <Label Text="↺"
+                               FontSize="26"
+                               TextColor="#F5A623"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"/>
+                    </Border>
+                    <Label Text="Reset Scan History"
+                           FontSize="17" FontAttributes="Bold"
+                           TextColor="#F0F0FF"
+                           HorizontalTextAlignment="Center"/>
+                    <Label Text="This will clear all scan history so the next scan re-inspects every app on your device. Your saved WebView apps will not be affected."
+                           FontSize="13" TextColor="#7878A0"
+                           HorizontalTextAlignment="Center"
+                           LineBreakMode="WordWrap"/>
+                    <BoxView HeightRequest="1" Color="#2A2A3D" Margin="0,4"/>
+                    <Grid ColumnDefinitions="*,*" ColumnSpacing="10">
+                        <Button Grid.Column="0"
+                                Text="Cancel"
+                                BackgroundColor="#1E1E2E"
+                                TextColor="#7878A0"
+                                FontSize="15"
+                                CornerRadius="12"
+                                HeightRequest="44"
+                                Clicked="OnResetCancelClicked"/>
+                        <Button Grid.Column="1"
+                                Text="Reset"
+                                BackgroundColor="#1E1500"
+                                TextColor="#F5A623"
+                                FontSize="15" FontAttributes="Bold"
+                                CornerRadius="12"
+                                HeightRequest="44"
+                                Clicked="OnResetConfirmClicked"/>
+                    </Grid>
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        <!-- ── Reset done popup ── -->
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        <Grid x:Name="ResetDonePopup" Grid.RowSpan="2"
+              IsVisible="False" BackgroundColor="#CC000010">
+            <Border BackgroundColor="#13131A"
+                    Stroke="#2A2D35" StrokeThickness="1"
+                    StrokeShape="RoundRectangle 20"
+                    Padding="28,24"
+                    WidthRequest="300"
+                    VerticalOptions="Center" HorizontalOptions="Center">
+                <VerticalStackLayout Spacing="14">
+                    <Border BackgroundColor="#1E1500"
+                            Stroke="#F5A623" StrokeThickness="1"
+                            StrokeShape="RoundRectangle 40"
+                            WidthRequest="52" HeightRequest="52"
+                            HorizontalOptions="Center">
+                        <Label Text="✓"
+                               FontSize="24" FontAttributes="Bold"
+                               TextColor="#F5A623"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"/>
+                    </Border>
+                    <Label Text="Done"
+                           FontSize="17" FontAttributes="Bold"
+                           TextColor="#F0F0FF"
+                           HorizontalTextAlignment="Center"/>
+                    <Label Text="Scan history cleared. The next scan will inspect all apps."
+                           FontSize="13" TextColor="#7878A0"
+                           HorizontalTextAlignment="Center"
+                           LineBreakMode="WordWrap"/>
+                    <BoxView HeightRequest="1" Color="#2A2A3D" Margin="0,4"/>
+                    <Button Text="OK"
+                            BackgroundColor="#1E1500"
+                            TextColor="#F5A623"
+                            FontSize="15" FontAttributes="Bold"
+                            CornerRadius="12"
+                            HeightRequest="44"
+                            Clicked="OnResetDoneOkClicked"/>
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        <!-- ── Paywall popup ── -->
+        <!-- ══════════════════════════════════════════════════════════════════ -->
+        <Grid x:Name="PaywallPopup" Grid.RowSpan="2"
+              IsVisible="False" BackgroundColor="#CC000010">
+            <Border BackgroundColor="#13131A"
+                    Stroke="#2A2D35" StrokeThickness="1"
+                    StrokeShape="RoundRectangle 20"
+                    Padding="28,24"
+                    WidthRequest="310"
+                    VerticalOptions="Center" HorizontalOptions="Center">
+                <VerticalStackLayout Spacing="14">
+
+                    <Border BackgroundColor="#1E1500"
+                            Stroke="#F5A623" StrokeThickness="1"
+                            StrokeShape="RoundRectangle 40"
+                            WidthRequest="52" HeightRequest="52"
+                            HorizontalOptions="Center">
+                        <Label Text="🔒"
+                               FontSize="26"
+                               HorizontalOptions="Center"
+                               VerticalOptions="Center"/>
+                    </Border>
+
+                    <Label Text="Subscription Required"
+                           FontSize="17" FontAttributes="Bold"
+                           TextColor="#F0F0FF"
+                           HorizontalTextAlignment="Center"/>
+
+                    <Label Text="To access Saved Apps and generate code, you need:"
+                           FontSize="13" TextColor="#7878A0"
+                           HorizontalTextAlignment="Center"
+                           LineBreakMode="WordWrap"/>
+
+                    <!-- Step 1 -->
+                    <Border BackgroundColor="#0A0A0A"
+                            Stroke="#2A2D35" StrokeThickness="1"
+                            StrokeShape="RoundRectangle 10"
+                            Padding="14,10">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Step 1 — Subscribe on Desktop"
+                                   FontSize="13" FontAttributes="Bold"
+                                   TextColor="#F5A623"/>
+                            <Label Text="Purchase your $10/month subscription via SnapStak Desktop."
+                                   FontSize="12" TextColor="#7878A0"
+                                   LineBreakMode="WordWrap"/>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Step 2 -->
+                    <Border BackgroundColor="#0A0A0A"
+                            Stroke="#2A2D35" StrokeThickness="1"
+                            StrokeShape="RoundRectangle 10"
+                            Padding="14,10">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Step 2 — Pair via USB"
+                                   FontSize="13" FontAttributes="Bold"
+                                   TextColor="#F5A623"/>
+                            <Label Text="Connect your phone to your PC via USB, then press Pair on both SnapStak Desktop and Settings below."
+                                   FontSize="12" TextColor="#7878A0"
+                                   LineBreakMode="WordWrap"/>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <!-- Step 3 -->
+                    <Border BackgroundColor="#0A0A0A"
+                            Stroke="#2A2D35" StrokeThickness="1"
+                            StrokeShape="RoundRectangle 10"
+                            Padding="14,10">
+                        <VerticalStackLayout Spacing="4">
+                            <Label Text="Step 3 — Add OpenRouter Credits"
+                                   FontSize="13" FontAttributes="Bold"
+                                   TextColor="#F5A623"/>
+                            <Label Text="Add your OpenRouter API key in Settings and purchase credits. ~$0.30 per page."
+                                   FontSize="12" TextColor="#7878A0"
+                                   LineBreakMode="WordWrap"/>
+                        </VerticalStackLayout>
+                    </Border>
+
+                    <BoxView HeightRequest="1" Color="#2A2A3D" Margin="0,2"/>
+
+                    <Button Text="Get OpenRouter Key ↗"
+                            BackgroundColor="#1A2A3A"
+                            TextColor="#38A3F8"
+                            FontSize="14" FontAttributes="Bold"
+                            CornerRadius="12"
+                            HeightRequest="46"
+                            Clicked="OnOpenRouterClicked"/>
+
+                    <Button Text="Open Settings to Pair"
+                            BackgroundColor="#F5A623"
+                            TextColor="#060709"
+                            FontSize="14" FontAttributes="Bold"
+                            CornerRadius="12"
+                            HeightRequest="46"
+                            Clicked="OnPaywallSettingsClicked"/>
+
+                    <Button Text="Close"
+                            BackgroundColor="Transparent"
+                            TextColor="#444"
+                            FontSize="12"
+                            CornerRadius="12"
+                            HeightRequest="36"
+                            Clicked="OnPaywallCloseClicked"/>
+
+                </VerticalStackLayout>
+            </Border>
+        </Grid>
+
+
+    </Grid>
+
+</ContentPage>
